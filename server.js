@@ -1,6 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const { Sequelize, DataTypes } = require("sequelize");
+const Joi = require("joi");
 
 const app = express();
 const router = express.Router({ mergeParams: true });
@@ -21,8 +22,23 @@ const User = sequelize.define("User", {
 	},
 	lastName: {
 		type: DataTypes.STRING,
+		allowNull: false,
+	},
+	age: {
+		type: DataTypes.INTEGER,
 	},
 });
+const createUserSchema = Joi.object({
+	firstName: Joi.string().required(),
+	lastName: Joi.string().required(),
+	age: Joi.number(),
+});
+const updateUserSchema = Joi.object({
+	firstName: Joi.string(),
+	lastName: Joi.string(),
+	age: Joi.number(),
+});
+
 (async () => {
 	try {
 		await sequelize.authenticate();
@@ -36,8 +52,9 @@ const User = sequelize.define("User", {
 
 router.post("/", async (req, res) => {
 	try {
-		const { firstName, lastName } = req.body;
-		const user = await User.create({ firstName, lastName });
+		const { firstName, lastName, age } = req.body;
+		await createUserSchema.validateAsync({ firstName, lastName, age });
+		const user = await User.create({ firstName, lastName, age });
 		return res.status(200).send({ message: "User created successfully", user });
 	} catch (error) {
 		return res.status(500).send({ error: error.message || error });
@@ -60,13 +77,14 @@ router.get("/:user_id", async (req, res) => {
 router.put("/:user_id", async (req, res) => {
 	try {
 		const { body, params } = req;
-		const { firstName, lastName } = body;
+		const { firstName, lastName, age } = body;
+		await updateUserSchema.validateAsync({ firstName, lastName, age });
 		const { user_id } = params;
 		const user = await User.findOne({ where: { id: user_id }, raw: false });
 		if (!user) {
 			res.status(404).send({ message: "User not found" });
 		}
-		user.set({ firstName, lastName });
+		user.set({ firstName, lastName, age });
 		await user.save();
 		return res.status(200).send({ message: "User updated successfully", user });
 	} catch (error) {
