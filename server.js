@@ -43,7 +43,7 @@ const updateUserSchema = Joi.object({
 	try {
 		await sequelize.authenticate();
 		console.log("Connection has been established successfully.");
-		await sequelize.sync({});
+		await sequelize.sync({ alter: true });
 		console.log("All models were synchronized successfully.");
 	} catch (error) {
 		console.error("Unable to connect to the database:", error);
@@ -77,14 +77,13 @@ router.get("/:user_id", async (req, res) => {
 router.put("/:user_id", async (req, res) => {
 	try {
 		const { body, params } = req;
-		const { firstName, lastName, age } = body;
-		await updateUserSchema.validateAsync({ firstName, lastName, age });
+		const valid = await updateUserSchema.validateAsync(body);
 		const { user_id } = params;
 		const user = await User.findOne({ where: { id: user_id }, raw: false });
 		if (!user) {
 			res.status(404).send({ message: "User not found" });
 		}
-		user.set({ firstName, lastName, age });
+		user.set(valid);
 		await user.save();
 		return res.status(200).send({ message: "User updated successfully", user });
 	} catch (error) {
