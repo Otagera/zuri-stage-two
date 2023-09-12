@@ -107,4 +107,4 @@ dist
 .DS_Store
 
 .vscode
-Stackoverflow-lite.postman_collection.json
+db.sqlite
