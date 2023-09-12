@@ -1,26 +1,117 @@
-# Zuri Stage 1
+# Zuri Stage 2
 
-An API service for a lite version of stackoverflow
+An API service for a simple CRUD application
 
-Live on heroku [othniel-stackoverflow-lite](https://othniel-stackoverflow-lite.herokuapp.com/api/v1)
+Live on Render [zuri-stage-two](https://otagera-zuri-stage-two.onrender.com/api)
 
 ## End-point: Index
 
-### Method: Get
+### Method: GET
 
 > ```
-> {{baseUrl}}/api/api?slack_name=&track=
+> {{baseUrl}}/api/:user_id
+> ```
+
+### Response (**raw**)
+
+```json
+{
+  "message": "User fetched successfully",
+  "user": {
+    "id": 1,
+    "firstName": "First",
+    "lastName": "Last",
+    "age": 50,
+    "createdAt": "2023-09-12T09:42:58.777Z",
+    "updatedAt": "2023-09-12T09:42:58.777Z"
+  }
+}
+```
+
+### Method: POST
+
+> ```
+> {{baseUrl}}/api
 > ```
 
 ### Body (**raw**)
 
 ```json
 {
-  "slack_name": "",
-  "current_day": "Sunday",
-  "track": "",
-  "github_file_url": "",
-  "github_repo_url": "",
-  "status_code": 200
+  "firstName": "First",
+  "lastName": "Last",
+  "age": 50
 }
 ```
+
+### Response (**raw**)
+
+```json
+{
+  "message": "User created successfully",
+  "user": {
+    "id": 3,
+    "firstName": "First",
+    "lastName": "Last",
+    "age": 50,
+    "updatedAt": "2023-09-12T09:43:24.214Z",
+    "createdAt": "2023-09-12T09:43:24.214Z"
+  }
+}
+```
+
+### Method: PUT
+
+> ```
+> {{baseUrl}}/api/:user_id
+> ```
+
+### Body (**raw**)
+
+```json
+{
+  "firstName": "First",
+  "lastName": "Last",
+  "age": 50
+}
+```
+
+### Response (**raw**)
+
+```json
+{
+  "message": "User updated successfully",
+  "user": {
+    "id": 3,
+    "firstName": "First",
+    "lastName": "Last",
+    "age": 50,
+    "updatedAt": "2023-09-12T09:43:24.214Z",
+    "createdAt": "2023-09-12T09:43:24.214Z"
+  }
+}
+```
+
+### Method: DELETE
+
+> ```
+> {{baseUrl}}/api/:user_id
+> ```
+
+### Response (**raw**)
+
+```json
+{
+  "message": "User deleted successfully",
+  "user": {
+    "id": 3,
+    "firstName": "First",
+    "lastName": "Last",
+    "age": 50,
+    "updatedAt": "2023-09-12T09:43:24.214Z",
+    "createdAt": "2023-09-12T09:43:24.214Z"
+  }
+}
+```
+
+![UML diagram](diagram/zuri-stage-2.drawio.svg)
